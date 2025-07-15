@@ -4,8 +4,10 @@ import com.kushalkart.entity.User;
 import com.kushalkart.repository.UserRepository;
 import com.kushalkart.util.JwtService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -20,10 +22,6 @@ public class UserService {
         this.jwtService = jwtService;
     }
 
-    /**
-     * Send OTP to mobile number.
-     * If user does not exist, create it.
-     */
     public ResponseEntity<?> sendOtp(String mobile) {
         String otp = String.valueOf(new Random().nextInt(899999) + 100000);
 
@@ -38,25 +36,27 @@ public class UserService {
         user.setOtp(otp);
         userRepository.save(user);
 
-        // In real world — send OTP via SMS gateway
-        return ResponseEntity.ok(Map.of(
-                "message", "OTP sent to mobile",
-                "mobile", mobile,
-                "otp", otp // ⚠️ for dev/debug only. Remove in production.
-        ));
+        return ResponseEntity.ok(
+                Map.of(
+                        "message", "OTP sent to mobile",
+                        "mobile", mobile,
+                        "otp", otp // ⚠️ Remove in production
+                )
+        );
     }
 
-    /**
-     * Verify OTP & login.
-     * Return JWT token and user details if valid.
-     */
     public ResponseEntity<?> loginWithOtp(String mobile, String otp) {
         return userRepository.findByMobile(mobile).map(user -> {
             if (user.getOtp().equals(otp)) {
                 user.setVerified(true);
                 userRepository.save(user);
 
-                String token = jwtService.generateToken(user);
+                // Option 1: Wrap into UserDetails
+                UserDetails userDetails = new org.springframework.security.core.userdetails.User(
+                        user.getMobile(), "", List.of()
+                );
+
+                String token = jwtService.generateToken(userDetails);
 
                 return ResponseEntity.ok(Map.of(
                         "message", "Login successful",

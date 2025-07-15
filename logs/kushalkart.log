@@ -1,8 +1,11 @@
-2025-07-15T00:06:55.058+05:30  WARN 54876 --- [kushalkart] [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h2m37s940ms).
-2025-07-15T01:25:26.635+05:30  WARN 54876 --- [kushalkart] [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h18m31s575ms).
-2025-07-15T02:40:03.665+05:30  WARN 54876 --- [kushalkart] [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h14m37s31ms).
-2025-07-15T04:01:46.774+05:30  WARN 54876 --- [kushalkart] [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h21m43s110ms).
-2025-07-15T05:43:38.765+05:30  WARN 54876 --- [kushalkart] [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h41m51s989ms).
-2025-07-15T07:01:21.328+05:30  WARN 54876 --- [kushalkart] [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h17m42s565ms).
-2025-07-15T08:01:16.485+05:30  WARN 54876 --- [kushalkart] [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=59m55s156ms).
-2025-07-15T09:12:48.993+05:30  WARN 54876 --- [kushalkart] [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h11m32s508ms).
+2025-07-15T20:53:29.937+05:30 DEBUG 60327 --- [kushalkart] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing POST /api/user/verify-otp
+2025-07-15T20:53:29.941+05:30 DEBUG 60327 --- [kushalkart] [http-nio-8080-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-07-15T20:53:29.942+05:30 DEBUG 60327 --- [kushalkart] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Secured POST /api/user/verify-otp
+2025-07-15T20:53:43.102+05:30 DEBUG 60327 --- [kushalkart] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /api/user/profile
+2025-07-15T20:53:43.114+05:30 DEBUG 60327 --- [kushalkart] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Secured GET /api/user/profile
+2025-07-15T20:54:10.520+05:30 DEBUG 60327 --- [kushalkart] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing POST /api/user/verify-otp
+2025-07-15T20:54:10.526+05:30 DEBUG 60327 --- [kushalkart] [http-nio-8080-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-07-15T20:54:10.527+05:30 DEBUG 60327 --- [kushalkart] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured POST /api/user/verify-otp
+2025-07-15T20:54:15.230+05:30 DEBUG 60327 --- [kushalkart] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Securing POST /api/user/verify-otp
+2025-07-15T20:54:15.230+05:30 DEBUG 60327 --- [kushalkart] [http-nio-8080-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-07-15T20:54:15.231+05:30 DEBUG 60327 --- [kushalkart] [http-nio-8080-exec-1] o.s.security.web.FilterChainProxy        : Secured POST /api/user/verify-otp
