@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -22,8 +23,13 @@ public class UserService {
         this.jwtService = jwtService;
     }
 
+    /**
+     * Send or Resend OTP to the given mobile number.
+     * If user does not exist, create a new user.
+     * If user already exists, just generate and save a new OTP.
+     */
     public ResponseEntity<?> sendOtp(String mobile) {
-        String otp = String.valueOf(new Random().nextInt(899999) + 100000);
+        String otp = generateOtp();
 
         User user = userRepository.findByMobile(mobile)
                 .orElseGet(() -> {
@@ -34,24 +40,30 @@ public class UserService {
                 });
 
         user.setOtp(otp);
+
+        // Optionally, track when OTP was sent
+        user.setOtpGeneratedAt(LocalDateTime.now());
+
         userRepository.save(user);
 
         return ResponseEntity.ok(
                 Map.of(
                         "message", "OTP sent to mobile",
                         "mobile", mobile,
-                        "otp", otp // ⚠️ Remove in production
+                        "otp", otp // ⚠️ For dev/debug only. Remove in production.
                 )
         );
     }
 
+    /**
+     * Verify OTP and return JWT token if successful.
+     */
     public ResponseEntity<?> loginWithOtp(String mobile, String otp) {
         return userRepository.findByMobile(mobile).map(user -> {
             if (user.getOtp().equals(otp)) {
                 user.setVerified(true);
                 userRepository.save(user);
 
-                // Option 1: Wrap into UserDetails
                 UserDetails userDetails = new org.springframework.security.core.userdetails.User(
                         user.getMobile(), "", List.of()
                 );
@@ -74,5 +86,12 @@ public class UserService {
         }).orElse(ResponseEntity.badRequest().body(Map.of(
                 "error", "User not found"
         )));
+    }
+
+    /**
+     * Generates a 6-digit OTP.
+     */
+    private String generateOtp() {
+        return String.valueOf(new Random().nextInt(900000) + 100000);
     }
 }

@@ -1,6 +1,7 @@
 package com.kushalkart.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "user")
@@ -10,7 +11,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "mobile_no", nullable = false, unique = true)
+    @Column(name = "mobile", nullable = false, unique = true)
     private String mobile;
 
     @Column(name = "otp")
@@ -27,6 +28,9 @@ public class User {
 
     @Column(name = "email")
     private String email;
+
+    @Column(name = "otp_generated_at")
+    private LocalDateTime otpGeneratedAt;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -48,4 +52,12 @@ public class User {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    public LocalDateTime getOtpGeneratedAt() {
+        return otpGeneratedAt;
+    }
+
+    public void setOtpGeneratedAt(LocalDateTime otpGeneratedAt) {
+        this.otpGeneratedAt = otpGeneratedAt;
+    }
 }
