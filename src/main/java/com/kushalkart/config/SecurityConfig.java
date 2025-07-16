@@ -50,7 +50,8 @@ public class SecurityConfig {
                     "/api/admin/login",
                     "/api/superadmin/hash",
                     "/api/user/send-otp",
-                    "/api/user/verify-otp"
+                    "/api/user/verify-otp",
+                    "/api/worker/register"   // 👈 add this line
                 ).permitAll()
                 .anyRequest().authenticated()
             )
