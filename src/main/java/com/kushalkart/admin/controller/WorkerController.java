@@ -21,10 +21,11 @@ public class WorkerController {
     @PostMapping("/register")
     public ResponseEntity<?> registerWorker(@RequestBody WorkerRegisterRequest request) {
 
-        if (workerRepository.existsByUsername(request.getUsername())) {
+        // check duplicate mobile
+        if (workerRepository.findByMobile(request.getMobile()).isPresent()) {
             return ResponseEntity
                     .badRequest()
-                    .body("Username already exists");
+                    .body("Mobile number already exists");
         }
 
         Worker worker = new Worker();
@@ -35,7 +36,7 @@ public class WorkerController {
         worker.setPassword(passwordEncoder.encode(request.getPassword()));
         worker.setServiceCategoryId(request.getServiceCategoryId());
         worker.setBio(request.getBio());
-        worker.setSkills(request.getSkillsJson()); // if passed
+        worker.setSkills(request.getSkillsJson()); // if JSON string
         worker.setRatePerHour(request.getRatePerHour());
         worker.setVerified(false);
         worker.setKycStatus(Worker.KycStatus.PENDING);
