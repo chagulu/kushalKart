@@ -10,6 +10,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,8 +42,7 @@ public class WorkerKycController {
             @RequestParam String aadhaarNumber,
             @RequestParam MultipartFile aadhaarFront,
             @RequestParam MultipartFile aadhaarBack,
-            @RequestParam MultipartFile workerPhoto,
-            @RequestParam Long adminId
+            @RequestParam MultipartFile workerPhoto
     ) throws IOException {
 
         Worker worker = workerRepository.findById(workerId).orElse(null);
@@ -49,9 +50,9 @@ public class WorkerKycController {
             return ResponseEntity.badRequest().body(new ApiResponse(false, "Worker not found"));
         }
 
-        AdminUser admin = adminUserRepository.findById(adminId).orElse(null);
-        if (admin == null) {
-            return ResponseEntity.badRequest().body(new ApiResponse(false, "Admin not found"));
+        AdminUser currentAdmin = getCurrentAdmin();
+        if (currentAdmin == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false, "Unauthorized"));
         }
 
         WorkerKyc kyc = new WorkerKyc();
@@ -61,7 +62,7 @@ public class WorkerKycController {
         kyc.setAadhaarBackPath(saveFile(aadhaarBack));
         kyc.setWorkerPhotoPath(saveFile(workerPhoto));
         kyc.setStatus(WorkerKyc.Status.PENDING);
-        kyc.setRegisteredBy(admin);
+        kyc.setRegisteredBy(currentAdmin);
 
         workerKycRepository.save(kyc);
 
@@ -110,9 +111,27 @@ public class WorkerKycController {
         if (kyc == null) {
             return ResponseEntity.badRequest().body(new ApiResponse(false, "KYC record not found"));
         }
+
+        AdminUser currentAdmin = getCurrentAdmin();
+        if (currentAdmin == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false, "Unauthorized"));
+        }
+
         kyc.setStatus(status);
+        kyc.setVerifiedBy(currentAdmin);
         workerKycRepository.save(kyc);
+
         return ResponseEntity.ok(new ApiResponse(true, "KYC " + status.name()));
+    }
+
+    private AdminUser getCurrentAdmin() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            return null;
+        }
+
+        String username = auth.getName();
+        return adminUserRepository.findByUsername(username).orElse(null);
     }
 
     private String maskAadhaar(String aadhaar) {

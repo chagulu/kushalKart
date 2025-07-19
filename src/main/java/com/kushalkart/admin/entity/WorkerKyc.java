@@ -7,52 +7,50 @@ import java.time.LocalDateTime;
 @Table(name = "worker_kyc")
 public class WorkerKyc {
 
+    public enum Status {
+        PENDING, VERIFIED, REJECTED
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "worker_id", nullable = false)
     private Worker worker;
 
-    @Column(nullable = false)
+    @Column(name = "aadhaar_number", nullable = false)
     private String aadhaarNumber;
 
-    @Column(nullable = false)
+    @Column(name = "aadhaar_front_path", nullable = false)
     private String aadhaarFrontPath;
 
-    @Column(nullable = false)
+    @Column(name = "aadhaar_back_path", nullable = false)
     private String aadhaarBackPath;
 
-    @Column(nullable = false)
+    @Column(name = "worker_photo_path", nullable = false)
     private String workerPhotoPath;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Status status = Status.PENDING;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "registered_by")
+    @ManyToOne
+    @JoinColumn(name = "registered_by", nullable = false)
     private AdminUser registeredBy;
+
+    @ManyToOne
+    @JoinColumn(name = "verified_by")
+    private AdminUser verifiedBy;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt = LocalDateTime.now();
+    // getters & setters …
+    // include verifiedBy
 
-    public enum Status {
-        PENDING,
-        VERIFIED,
-        REJECTED
-    }
-
-    // Getters & Setters
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Worker getWorker() {
@@ -111,19 +109,15 @@ public class WorkerKyc {
         this.registeredBy = registeredBy;
     }
 
+    public AdminUser getVerifiedBy() {
+        return verifiedBy;
+    }
+
+    public void setVerifiedBy(AdminUser verifiedBy) {
+        this.verifiedBy = verifiedBy;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
     }
 }
