@@ -1,6 +1,6 @@
 package com.kushalkart.controller;
 
-import com.kushalkart.dto.ServiceCategoryDTO;
+
 import com.kushalkart.dto.ServiceCategoryDetailsDTO;
 import com.kushalkart.entity.ServiceCategory;
 import com.kushalkart.repository.ServiceCategoryRepository;

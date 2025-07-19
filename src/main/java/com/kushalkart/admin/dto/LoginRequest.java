@@ -1,6 +1,5 @@
 package com.kushalkart.admin.dto;
 
-import com.kushalkart.admin.entity.AdminUser;
 
 public class LoginRequest {
     private String username;
