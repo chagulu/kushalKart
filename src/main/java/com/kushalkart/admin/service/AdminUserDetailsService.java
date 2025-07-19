@@ -19,13 +19,13 @@ public class AdminUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AdminUser admin = adminUserRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Admin user not found: " + username));
+        AdminUser adminUser = adminUserRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Admin user not found with username: " + username));
 
         return User.builder()
-                .username(admin.getUsername())
-                .password(admin.getPassword()) // this should already be a BCrypt hash
-                .roles(admin.getRole().name()) // maps enum role to Spring Security role
+                .username(adminUser.getUsername())
+                .password(adminUser.getPassword()) // should already be encoded
+                .roles(adminUser.getRole().name())  // make sure role is an ENUM or String
                 .build();
     }
 }

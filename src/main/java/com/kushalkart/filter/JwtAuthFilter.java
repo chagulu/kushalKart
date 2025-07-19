@@ -1,6 +1,7 @@
 package com.kushalkart.filter;
 
 import com.kushalkart.util.JwtService;
+import com.kushalkart.admin.service.AdminUserDetailsService;
 import com.kushalkart.service.MyUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,7 +24,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private JwtService jwtService;
 
     @Autowired
-    private MyUserDetailsService userDetailsService;
+    private MyUserDetailsService myUserDetailsService;
+
+    @Autowired
+    private AdminUserDetailsService adminUserDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -43,7 +47,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         username = jwtService.extractUsername(jwt);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+            // decide which UserDetailsService to use
+            UserDetails userDetails;
+
+            String role = jwtService.extractClaim(jwt, claims -> claims.get("role", String.class));
+
+            if ("SUPER_ADMIN".equals(role) || "ADMIN".equals(role)) {
+                userDetails = adminUserDetailsService.loadUserByUsername(username);
+            } else {
+                userDetails = myUserDetailsService.loadUserByUsername(username);
+            }
 
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken =
@@ -59,6 +73,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
+
         filterChain.doFilter(request, response);
     }
 }

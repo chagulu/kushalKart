@@ -8,6 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/worker")
 public class WorkerController {
@@ -21,11 +24,12 @@ public class WorkerController {
     @PostMapping("/register")
     public ResponseEntity<?> registerWorker(@RequestBody WorkerRegisterRequest request) {
 
-        // check duplicate mobile
         if (workerRepository.findByMobile(request.getMobile()).isPresent()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body("Mobile number already exists");
+            return buildErrorResponse("Mobile number already exists");
+        }
+
+        if (workerRepository.findByUsername(request.getUsername()).isPresent()) {
+            return buildErrorResponse("Username already exists");
         }
 
         Worker worker = new Worker();
@@ -36,13 +40,24 @@ public class WorkerController {
         worker.setPassword(passwordEncoder.encode(request.getPassword()));
         worker.setServiceCategoryId(request.getServiceCategoryId());
         worker.setBio(request.getBio());
-        worker.setSkills(request.getSkillsJson()); // if JSON string
+        worker.setSkills(request.getSkillsJson());
         worker.setRatePerHour(request.getRatePerHour());
         worker.setVerified(false);
         worker.setKycStatus(Worker.KycStatus.PENDING);
 
         workerRepository.save(worker);
 
-        return ResponseEntity.ok("Worker registered successfully");
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("message", "Worker registered successfully");
+
+        return ResponseEntity.ok(response);
+    }
+
+    private ResponseEntity<Map<String, Object>> buildErrorResponse(String message) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "error");
+        response.put("message", message);
+        return ResponseEntity.badRequest().body(response);
     }
 }
