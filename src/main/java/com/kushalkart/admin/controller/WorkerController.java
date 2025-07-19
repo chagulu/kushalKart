@@ -1,8 +1,12 @@
 package com.kushalkart.admin.controller;
 
+import com.kushalkart.admin.dto.WorkerAddressDTO;
 import com.kushalkart.admin.dto.WorkerRegisterRequest;
 import com.kushalkart.admin.entity.Worker;
+import com.kushalkart.admin.entity.WorkerAddress;
+import com.kushalkart.admin.repository.WorkerAddressRepository;
 import com.kushalkart.admin.repository.WorkerRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,8 +23,14 @@ public class WorkerController {
     private WorkerRepository workerRepository;
 
     @Autowired
+    private WorkerAddressRepository workerAddressRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * Register new Worker.
+     */
     @PostMapping("/register")
     public ResponseEntity<?> registerWorker(@RequestBody WorkerRegisterRequest request) {
 
@@ -50,8 +60,37 @@ public class WorkerController {
         Map<String, Object> response = new HashMap<>();
         response.put("status", "success");
         response.put("message", "Worker registered successfully");
+        response.put("workerId", worker.getId());
 
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Update Worker Address.
+     */
+    @PatchMapping("/{workerId}/address")
+    public ResponseEntity<?> updateWorkerAddress(
+            @PathVariable Long workerId,
+            @RequestBody WorkerAddressDTO request) {
+
+        Worker worker = workerRepository.findById(workerId)
+                .orElseThrow(() -> new RuntimeException("Worker not found"));
+
+        WorkerAddress address = workerAddressRepository.findByWorkerId(workerId)
+                .orElse(new WorkerAddress());
+
+        address.setWorker(worker);
+        address.setAddressLine1(request.getAddressLine1());
+        address.setAddressLine2(request.getAddressLine2());
+        address.setCity(request.getCity());
+        address.setState(request.getState());
+        address.setPincode(request.getPincode());
+        address.setLocationLat(request.getLocationLat());
+        address.setLocationLng(request.getLocationLng());
+
+        workerAddressRepository.save(address);
+
+        return ResponseEntity.ok(Map.of("success", true, "message", "Worker address updated successfully"));
     }
 
     private ResponseEntity<Map<String, Object>> buildErrorResponse(String message) {
