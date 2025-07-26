@@ -1,12 +1,12 @@
 package com.kushalkart.controller;
 
-
 import com.kushalkart.dto.ServiceCategoryDetailsDTO;
 import com.kushalkart.entity.ServiceCategory;
 import com.kushalkart.repository.ServiceCategoryRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -19,6 +19,14 @@ public class ServiceCategoryController {
         this.repository = repository;
     }
 
+    // GET /api/services - returns all service categories
+    @GetMapping
+    public ResponseEntity<List<ServiceCategory>> getAllServices() {
+        List<ServiceCategory> services = repository.findAll();
+        return ResponseEntity.ok(services);
+    }
+
+    // GET /api/services/{id} - returns service by ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getServiceById(@PathVariable Long id) {
         Optional<ServiceCategory> serviceOpt = repository.findById(id);
@@ -26,11 +34,11 @@ public class ServiceCategoryController {
         if (serviceOpt.isPresent()) {
             ServiceCategory service = serviceOpt.get();
 
-            // Assuming categoryName is same as name for now.
+            // Create and return DTO
             ServiceCategoryDetailsDTO dto = new ServiceCategoryDetailsDTO(
                     service.getId(),
                     service.getName(),
-                    service.getName()
+                    service.getName() // assuming categoryName same as name
             );
 
             return ResponseEntity.ok(dto);
@@ -38,5 +46,4 @@ public class ServiceCategoryController {
             return ResponseEntity.status(404).body("Service with id " + id + " not found.");
         }
     }
-
 }
