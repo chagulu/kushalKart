@@ -1,6 +1,7 @@
 package com.kushalkart.service;
 
 import com.kushalkart.dto.BookingRequest;
+import com.kushalkart.dto.BookingUpdateRequest;
 import com.kushalkart.entity.Booking;
 import com.kushalkart.entity.User;
 import com.kushalkart.admin.entity.Worker;
@@ -42,6 +43,33 @@ public class BookingService {
             booking.setAddress(user.getAddress().getFullAddress());
         } else {
             booking.setAddress(null);
+        }
+
+        return bookingRepository.save(booking);
+    }
+
+    public Booking updateBooking(Long consumerId, Long bookingId, BookingUpdateRequest request) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        if (!booking.getConsumerId().equals(consumerId)) {
+            throw new RuntimeException("Unauthorized: You do not own this booking");
+        }
+
+        switch (request.getAction().toLowerCase()) {
+            case "reschedule":
+                if (request.getScheduledTime() == null) {
+                    throw new RuntimeException("Scheduled time required for reschedule");
+                }
+                booking.setScheduledTime(request.getScheduledTime());
+                break;
+
+            case "cancel":
+                booking.setStatus(Booking.Status.CANCELLED);
+                break;
+
+            default:
+                throw new RuntimeException("Invalid action. Use 'reschedule' or 'cancel'");
         }
 
         return bookingRepository.save(booking);
