@@ -10,6 +10,8 @@ import com.kushalkart.repository.UserRepository;
 import com.kushalkart.admin.repository.WorkerRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class BookingService {
 
@@ -73,5 +75,9 @@ public class BookingService {
         }
 
         return bookingRepository.save(booking);
+    }
+
+    public List<Booking> getBookingsForConsumer(Long consumerId) {
+        return bookingRepository.findAllByConsumerIdOrderByScheduledTimeDesc(consumerId);
     }
 }
