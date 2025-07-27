@@ -52,7 +52,8 @@ public class SecurityConfig {
                     "/api/admin/login",
                     "/api/superadmin/hash",
                     "/api/user/send-otp",
-                    "/api/user/verify-otp"
+                    "/api/user/verify-otp",
+                    "/api/bookings"
                 ).permitAll()
                 // All other endpoints, including /api/worker/register, require authentication
                 .anyRequest().authenticated()
