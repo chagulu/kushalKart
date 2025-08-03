@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/worker")
@@ -76,9 +77,10 @@ public class WorkerController {
         Worker worker = workerRepository.findById(workerId)
                 .orElseThrow(() -> new RuntimeException("Worker not found"));
 
-        WorkerAddress address = workerAddressRepository.findByWorkerId(workerId)
-                .orElse(new WorkerAddress());
+        // ✅ Use correct method: findByWorker_Id (not findByWorkerId)
+        Optional<WorkerAddress> addressOpt = workerAddressRepository.findByWorker_Id(workerId);
 
+        WorkerAddress address = addressOpt.orElse(new WorkerAddress());
         address.setWorker(worker);
         address.setAddressLine1(request.getAddressLine1());
         address.setAddressLine2(request.getAddressLine2());
@@ -90,7 +92,10 @@ public class WorkerController {
 
         workerAddressRepository.save(address);
 
-        return ResponseEntity.ok(Map.of("success", true, "message", "Worker address updated successfully"));
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "message", "Worker address updated successfully"
+        ));
     }
 
     private ResponseEntity<Map<String, Object>> buildErrorResponse(String message) {

@@ -10,9 +10,9 @@ public class WorkerAddress {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "worker_id", nullable = false, unique = true)
-    private Worker worker;
+    private Worker worker; // ✅ Make sure this field name matches your query usage
 
     @Column(name = "address_line1")
     private String addressLine1;
@@ -30,10 +30,14 @@ public class WorkerAddress {
     @Column(name = "location_lng")
     private Double locationLng;
 
-    // Getters and setters
+    // --- Getters and Setters ---
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Worker getWorker() {
@@ -98,5 +102,10 @@ public class WorkerAddress {
 
     public void setLocationLng(Double locationLng) {
         this.locationLng = locationLng;
+    }
+
+    // Optional helper to expose worker ID
+    public Long getWorkerId() {
+        return worker != null ? worker.getId() : null;
     }
 }

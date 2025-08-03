@@ -13,7 +13,7 @@ public class Worker {
 
     private String name;
     private String username;
-    private String mobile;
+    private String mobile; // Stored field
     private String email;
     private String password;
     private String service;
@@ -28,6 +28,9 @@ public class Worker {
 
     @Column(name = "service_category_id")
     private Long serviceCategoryId;
+
+    @Column(name = "service_id")
+    private Long serviceId;
 
     private boolean verified;
 
@@ -69,6 +72,11 @@ public class Worker {
 
     public void setMobile(String mobile) {
         this.mobile = mobile;
+    }
+
+    // ✅ Added to support getMobileNo() used in service code
+    public String getMobileNo() {
+        return this.mobile;
     }
 
     public String getEmail() {
@@ -141,5 +149,14 @@ public class Worker {
 
     public void setVerified(boolean verified) {
         this.verified = verified;
+    }
+
+    // ✅ Newly added getter/setter for serviceId
+    public Long getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(Long serviceId) {
+        this.serviceId = serviceId;
     }
 }
