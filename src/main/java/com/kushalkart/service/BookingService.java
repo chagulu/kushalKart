@@ -5,6 +5,7 @@ import com.kushalkart.dto.BookingResponse;
 import com.kushalkart.dto.BookingUpdateRequest;
 import com.kushalkart.entity.Booking;
 import com.kushalkart.entity.User;
+import com.kushalkart.admin.entity.Worker;
 import com.kushalkart.repository.BookingRepository;
 import com.kushalkart.repository.UserRepository;
 import com.kushalkart.admin.repository.WorkerRepository;
@@ -12,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 
 @Service
 public class BookingService {
@@ -28,6 +31,11 @@ public class BookingService {
         this.bookingRepository = bookingRepository;
     }
 
+    /**
+     * Create a new booking:
+     * - Sets amount using worker's rate_per_hour
+     * - Sets consumer name, phone, email from User
+     */
     public Booking createBooking(Long consumerId, BookingRequest dto) {
         Booking booking = new Booking();
         booking.setConsumerId(consumerId);
@@ -37,14 +45,36 @@ public class BookingService {
         booking.setPaymentStatus(Booking.PaymentStatus.PENDING);
         booking.setServiceId(dto.getServiceId());
 
+        // Fetch User for consumer info
         User user = userRepository.findById(consumerId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        // Set address from User if present
         if (user.getAddress() != null) {
             booking.setAddress(user.getAddress().getFullAddress());
         } else {
             booking.setAddress(null);
         }
+
+        // Set consumer name, phone, email based on available fields
+        if (user.getName() != null) { // fixed from getFullName()
+            booking.setConsumerName(user.getName());
+        }
+        if (user.getMobile() != null) { // fixed from getPhone()
+            booking.setConsumerPhone(user.getMobile());
+        }
+        if (user.getEmail() != null) {
+            booking.setConsumerEmail(user.getEmail());
+        }
+
+        // Fetch Worker for rate_per_hour
+        Worker worker = workerRepository.findById(dto.getWorkerId())
+                .orElseThrow(() -> new RuntimeException("Worker not found"));
+        BigDecimal ratePerHour = worker.getRatePerHour();
+        booking.setAmount(ratePerHour); // Optionally multiply by duration if needed
+
+        // Optionally set worker's service name
+        booking.setService(worker.getService());
 
         return bookingRepository.save(booking);
     }

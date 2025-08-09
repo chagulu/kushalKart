@@ -159,4 +159,8 @@ public class Worker {
     public void setServiceId(Long serviceId) {
         this.serviceId = serviceId;
     }
+
+    public String getServiceName() {
+    return this.service;
+}
 }
