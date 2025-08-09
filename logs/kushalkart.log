@@ -121,3 +121,7 @@ io.jsonwebtoken.ExpiredJwtException: JWT expired at 2025-08-08T20:14:17Z. Curren
 2025-08-09T13:44:54.653+05:30  INFO 22956 --- [kushalkart] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
 2025-08-09T13:44:54.654+05:30  INFO 22956 --- [kushalkart] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
 2025-08-09T13:44:54.665+05:30 DEBUG 22956 --- [kushalkart] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /api/services/by-location
+2025-08-09T14:40:17.631+05:30  WARN 22956 --- [kushalkart] [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=48m58s208ms).
+2025-08-09T15:52:26.780+05:30  WARN 22956 --- [kushalkart] [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h12m9s148ms).
+2025-08-09T17:09:36.194+05:30  WARN 22956 --- [kushalkart] [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h17m9s416ms).
+2025-08-09T17:58:55.917+05:30  WARN 22956 --- [kushalkart] [HikariPool-1:housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=49m19s722ms).
