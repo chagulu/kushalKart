@@ -8,6 +8,7 @@ import com.kushalkart.entity.ServiceCategory;
 import com.kushalkart.model.CustomUserDetails;
 import com.kushalkart.repository.ServiceCategoryRepository;
 import com.kushalkart.service.ServiceCategoryService;
+import com.kushalkart.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +23,16 @@ public class ServiceCategoryController {
 
     private final ServiceCategoryRepository repository;
     private final ServiceCategoryService serviceCategoryService;
+    private final UserService userService;
 
     public ServiceCategoryController(
             ServiceCategoryRepository repository,
-            ServiceCategoryService serviceCategoryService
+            ServiceCategoryService serviceCategoryService,
+            UserService userService
     ) {
         this.repository = repository;
         this.serviceCategoryService = serviceCategoryService;
+        this.userService = userService;
     }
 
     // GET /api/services - returns all service categories
@@ -38,10 +42,7 @@ public class ServiceCategoryController {
         return ResponseEntity.ok(services);
     }
 
-    // ========================================================================
-    // EXISTING: Get services filtered by authenticated user's location
-    // Returns the old DTO (without description/defaultRate/averageRating)
-    // ========================================================================
+    // Get services filtered by authenticated user's location (old DTO)
     @GetMapping("/by-location")
     public ResponseEntity<List<ServiceCategoryWithWorkersDTO>> getServicesByUserLocation(
             Authentication authentication
@@ -54,9 +55,7 @@ public class ServiceCategoryController {
         return ResponseEntity.ok(services);
     }
 
-    // ========================================================================
-    // EXISTING: Admin variant by userId (old DTO)
-    // ========================================================================
+    // Admin variant by userId (old DTO)
     @GetMapping("/user/{userId}/by-location")
     public ResponseEntity<List<ServiceCategoryWithWorkersDTO>> getServicesByUserLocation(
             @PathVariable Long userId
@@ -66,9 +65,7 @@ public class ServiceCategoryController {
         return ResponseEntity.ok(services);
     }
 
-    // ========================================================================
-    // EXISTING: Nearby areas (old DTO)
-    // ========================================================================
+    // Nearby areas (old DTO)
     @PostMapping("/nearby")
     public ResponseEntity<List<ServiceCategoryWithWorkersDTO>> getServicesByNearbyLocation(
             @RequestBody NearbyServiceRequest request,
@@ -82,10 +79,7 @@ public class ServiceCategoryController {
         return ResponseEntity.ok(services);
     }
 
-    // ========================================================================
-    // NEW: Enriched by user location (description, defaultRate, averageRating)
-    // Uses repository summary query behind the scenes.
-    // ========================================================================
+    // Enriched by user location (new DTO)
     @GetMapping("/by-location/enriched")
     public ResponseEntity<List<ServiceCategorySummaryDTO>> getServicesByUserLocationEnriched(
             Authentication authentication
@@ -93,35 +87,35 @@ public class ServiceCategoryController {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long userId = userDetails.getUserId();
 
-        String pincode = resolveUserPincode(userId); // Implement this in your service layer
+        String pincode = resolveUserPincode(userId);
         List<ServiceCategorySummaryDTO> result = fetchSummariesByPincode(pincode);
         return ResponseEntity.ok(result);
     }
 
-    // ========================================================================
-    // NEW: Enriched by userId (admin)
-    // ========================================================================
+    // Enriched by userId (admin)
     @GetMapping("/user/{userId}/by-location/enriched")
     public ResponseEntity<List<ServiceCategorySummaryDTO>> getServicesByUserLocationEnrichedAdmin(
             @PathVariable Long userId
     ) {
-        String pincode = resolveUserPincode(userId); // Implement this in your service layer
+        String pincode = resolveUserPincode(userId);
         List<ServiceCategorySummaryDTO> result = fetchSummariesByPincode(pincode);
         return ResponseEntity.ok(result);
     }
 
-    // ========================================================================
-    // NEW: Enriched by explicit pincode (useful for debugging/testing)
-    // ========================================================================
+    // ✅ Updated: Enriched by authenticated user's pincode (no query param)
     @GetMapping("/by-pincode/enriched")
     public ResponseEntity<List<ServiceCategorySummaryDTO>> getServicesByPincodeEnriched(
-            @RequestParam("pincode") String pincode
+            Authentication authentication
     ) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getUserId();
+
+        String pincode = resolveUserPincode(userId);
         List<ServiceCategorySummaryDTO> result = fetchSummariesByPincode(pincode);
         return ResponseEntity.ok(result);
     }
 
-    // GET /api/services/{id} - returns service by ID (kept as-is)
+    // GET /api/services/{id} - returns service by ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getServiceById(@PathVariable Long id) {
         Optional<ServiceCategory> serviceOpt = repository.findById(id);
@@ -129,11 +123,10 @@ public class ServiceCategoryController {
         if (serviceOpt.isPresent()) {
             ServiceCategory service = serviceOpt.get();
 
-            // Create and return DTO
             ServiceCategoryDetailsDTO dto = new ServiceCategoryDetailsDTO(
                     service.getId(),
                     service.getName(),
-                    service.getName() // assuming categoryName same as name
+                    service.getName()
             );
 
             return ResponseEntity.ok(dto);
@@ -142,16 +135,10 @@ public class ServiceCategoryController {
         }
     }
 
-    // ========================================================================
     // Internal helpers
-    // ========================================================================
 
-    // Replace with a proper lookup in your user/address service or repository.
-    // For example: userService.findPrimaryAddressPincodeByUserId(userId).
     private String resolveUserPincode(Long userId) {
-        // TODO: Implement actual resolution based on your data model.
-        // If you already have serviceCategoryService.resolvePincode(userId), call it here.
-        throw new UnsupportedOperationException("Implement resolveUserPincode(userId) using your user/address model");
+        return userService.findPrimaryAddressPincodeByUserId(userId);
     }
 
     private List<ServiceCategorySummaryDTO> fetchSummariesByPincode(String pincode) {

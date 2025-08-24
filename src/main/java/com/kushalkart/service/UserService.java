@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -23,11 +24,6 @@ public class UserService {
         this.jwtService = jwtService;
     }
 
-    /**
-     * Send or Resend OTP to the given mobile number.
-     * If user does not exist, create a new user.
-     * If user already exists, just generate and save a new OTP.
-     */
     public ResponseEntity<?> sendOtp(String mobile) {
         String otp = generateOtp();
 
@@ -40,8 +36,6 @@ public class UserService {
                 });
 
         user.setOtp(otp);
-
-        // Optionally, track when OTP was sent
         user.setOtpGeneratedAt(LocalDateTime.now());
 
         userRepository.save(user);
@@ -55,9 +49,6 @@ public class UserService {
         );
     }
 
-    /**
-     * Verify OTP and return JWT token if successful.
-     */
     public ResponseEntity<?> loginWithOtp(String mobile, String otp) {
         return userRepository.findByMobile(mobile).map(user -> {
             if (user.getOtp().equals(otp)) {
@@ -88,10 +79,21 @@ public class UserService {
         )));
     }
 
-    /**
-     * Generates a 6-digit OTP.
-     */
     private String generateOtp() {
         return String.valueOf(new Random().nextInt(900000) + 100000);
     }
+
+    /**
+     * ✅ Resolves pincode from user ID
+     */
+    public String findPrimaryAddressPincodeByUserId(Long userId) {
+    if (userId == null) {
+        throw new IllegalArgumentException("User ID must not be null");
+    }
+
+    return userRepository.findPincodeByUserId(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found or pincode missing"));
+}
+
+
 }

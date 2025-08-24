@@ -108,4 +108,20 @@ public class User {
     public void setAddress(UserAddress address) {
         this.address = address;
     }
+
+    /**
+     * ✅ Convenience getter to retrieve the pincode from the user's address.
+     * Returns null if address is not set.
+     */
+    public String getPincode() {
+        return this.address != null ? this.address.getPincode() : null;
+    }
+
+    /**
+     * ✅ Static helper that accepts a User and returns its pincode (null-safe).
+     */
+    public static String getPincode(User user) {
+        if (user == null) return null;
+        return user.getAddress() != null ? user.getAddress().getPincode() : null;
+    }
 }
