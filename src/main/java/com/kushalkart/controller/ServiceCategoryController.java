@@ -102,7 +102,7 @@ public class ServiceCategoryController {
         return ResponseEntity.ok(result);
     }
 
-    // ✅ Updated: Enriched by authenticated user's pincode (no query param)
+    // ✅ Enriched by authenticated user's pincode (all services)
     @GetMapping("/by-pincode/enriched")
     public ResponseEntity<List<ServiceCategorySummaryDTO>> getServicesByPincodeEnriched(
             Authentication authentication
@@ -115,7 +115,34 @@ public class ServiceCategoryController {
         return ResponseEntity.ok(result);
     }
 
-    // GET /api/services/{id} - returns service by ID
+    // ✅ NEW: Enriched by authenticated user's pincode and service ID
+   @GetMapping("/by-pincode/enriched/{id}")
+    public ResponseEntity<?> getEnrichedServiceById(
+            @PathVariable Long id,
+            Authentication authentication
+    ) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getUserId();
+
+        String pincode = resolveUserPincode(userId);
+        Optional<ServiceCategorySummaryDTO> dtoOpt = fetchSummaryByPincodeAndId(pincode, id);
+
+        if (dtoOpt.isPresent()) {
+            return ResponseEntity.ok(dtoOpt.get());
+        } else {
+            // Return 200 OK with a structured response so callers don't treat this as an error
+            Map<String, Object> resp = new HashMap<>();
+            resp.put("message", "No data found for id " + id);
+            resp.put("status", "not_found");
+            resp.put("data", null);
+            return ResponseEntity.ok(resp);
+        }
+    }
+
+
+
+
+    // GET /api/services/{id} - returns service by ID (basic DTO)
     @GetMapping("/{id}")
     public ResponseEntity<?> getServiceById(@PathVariable Long id) {
         Optional<ServiceCategory> serviceOpt = repository.findById(id);
@@ -144,6 +171,14 @@ public class ServiceCategoryController {
     private List<ServiceCategorySummaryDTO> fetchSummariesByPincode(String pincode) {
         List<Object[]> rows = repository.findServiceCategorySummariesByPincode(pincode);
         return rows.stream().map(this::mapSummaryRow).collect(Collectors.toList());
+    }
+
+    private Optional<ServiceCategorySummaryDTO> fetchSummaryByPincodeAndId(String pincode, Long id) {
+        List<Object[]> rows = repository.findServiceCategorySummariesByPincode(pincode);
+        return rows.stream()
+                .map(this::mapSummaryRow)
+                .filter(dto -> dto.getId().equals(id))
+                .findFirst();
     }
 
     private ServiceCategorySummaryDTO mapSummaryRow(Object[] row) {

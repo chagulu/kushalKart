@@ -67,6 +67,17 @@ public void setCategoryId(Long categoryId) {
 this.categoryId = categoryId;
 }
 
+/*
+ * Backwards-compatible accessor named getId()/setId() used by some mappers/clients.
+ * These simply delegate to the existing categoryId field.
+ */
+public Long getId() {
+return categoryId;
+}
+public void setId(Long id) {
+this.categoryId = id;
+}
+
 public String getCategoryName() {
 return categoryName;
 }
