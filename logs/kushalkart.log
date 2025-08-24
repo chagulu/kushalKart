@@ -99,3 +99,10 @@
 2025-08-24T21:42:39.824+05:30 DEBUG 18660 --- [kushalkart] [http-nio-8080-exec-4] o.s.security.web.FilterChainProxy        : Secured POST /api/user/verify-otp
 2025-08-24T21:42:44.344+05:30 DEBUG 18660 --- [kushalkart] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /api/services/by-location
 2025-08-24T21:42:44.439+05:30 DEBUG 18660 --- [kushalkart] [http-nio-8080-exec-5] o.s.security.web.FilterChainProxy        : Secured GET /api/services/by-location
+2025-08-24T21:45:03.104+05:30 DEBUG 18660 --- [kushalkart] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Securing POST /api/user/verify-otp
+2025-08-24T21:45:03.108+05:30 DEBUG 18660 --- [kushalkart] [http-nio-8080-exec-7] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
+2025-08-24T21:45:03.108+05:30 DEBUG 18660 --- [kushalkart] [http-nio-8080-exec-7] o.s.security.web.FilterChainProxy        : Secured POST /api/user/verify-otp
+2025-08-24T21:45:06.309+05:30 DEBUG 18660 --- [kushalkart] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing GET /api/services/by-location
+2025-08-24T21:45:06.320+05:30 DEBUG 18660 --- [kushalkart] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Secured GET /api/services/by-location
+2025-08-24T21:46:40.679+05:30 DEBUG 18660 --- [kushalkart] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /api/services/by-pincode/enriched?pincode=110068
+2025-08-24T21:46:40.719+05:30 DEBUG 18660 --- [kushalkart] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /api/services/by-pincode/enriched?pincode=110068
