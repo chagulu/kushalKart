@@ -10,37 +10,82 @@ import java.util.List;
 
 @Repository
 public interface ServiceCategoryRepository extends JpaRepository<ServiceCategory, Long> {
-    
+
+    // Find categories that have at least one worker in the given pincode (JPQL, via entity mappings)
     @Query("""
-        SELECT DISTINCT sc FROM ServiceCategory sc 
-        JOIN Worker w ON w.serviceCategoryId = sc.id 
-        JOIN WorkerAddress wa ON wa.worker.id = w.id 
+        SELECT DISTINCT sc FROM ServiceCategory sc
+        JOIN Worker w ON w.serviceCategoryId = sc.id
+        JOIN WorkerAddress wa ON wa.worker.id = w.id
         WHERE wa.pincode = :pincode
         """)
     List<ServiceCategory> findCategoriesWithWorkersByPincode(@Param("pincode") String pincode);
-    
+
+    // Find categories that have at least one worker in any of the given pincodes (JPQL)
     @Query("""
-        SELECT DISTINCT sc FROM ServiceCategory sc 
-        JOIN Worker w ON w.serviceCategoryId = sc.id 
-        JOIN WorkerAddress wa ON wa.worker.id = w.id 
+        SELECT DISTINCT sc FROM ServiceCategory sc
+        JOIN Worker w ON w.serviceCategoryId = sc.id
+        JOIN WorkerAddress wa ON wa.worker.id = w.id
         WHERE wa.pincode IN :pincodes
         """)
     List<ServiceCategory> findCategoriesWithWorkersByPincodes(@Param("pincodes") List<String> pincodes);
-    
-    // Alternative native SQL queries if the above don't work due to entity mapping issues
+
+    // Native alternative for single pincode if entity relationships cause issues
     @Query(value = """
-        SELECT DISTINCT sc.* FROM service_category sc 
-        INNER JOIN workers w ON w.service_category_id = sc.id 
-        INNER JOIN worker_addresses wa ON wa.worker_id = w.id 
+        SELECT DISTINCT sc.* FROM service_category sc
+        INNER JOIN workers w ON w.service_category_id = sc.id
+        INNER JOIN worker_addresses wa ON wa.worker_id = w.id
         WHERE wa.pincode = :pincode
         """, nativeQuery = true)
     List<ServiceCategory> findCategoriesWithWorkersByPincodeNative(@Param("pincode") String pincode);
-    
+
+    // Native alternative for multiple pincodes
     @Query(value = """
-        SELECT DISTINCT sc.* FROM service_category sc 
-        INNER JOIN workers w ON w.service_category_id = sc.id 
-        INNER JOIN worker_addresses wa ON wa.worker_id = w.id 
+        SELECT DISTINCT sc.* FROM service_category sc
+        INNER JOIN workers w ON w.service_category_id = sc.id
+        INNER JOIN worker_addresses wa ON wa.worker_id = w.id
         WHERE wa.pincode IN (:pincodes)
         """, nativeQuery = true)
     List<ServiceCategory> findCategoriesWithWorkersByPincodesNative(@Param("pincodes") List<String> pincodes);
+
+    /*
+     Enriched summary for "services by location":
+     - categoryId, categoryName
+     - userPincode (echoed)
+     - availableWorkersCount: workers in that category and pincode
+     - description, defaultRate from service_details
+     - averageRating: AVG ratings for workers of that category in that pincode
+    */
+    @Query(value = """
+        SELECT
+            sc.id AS categoryId,
+            sc.name AS categoryName,
+            :pincode AS userPincode,
+            COALESCE((
+                SELECT COUNT(*)
+                FROM workers w
+                JOIN worker_addresses wa ON wa.worker_id = w.id
+                WHERE w.service_category_id = sc.id
+                  AND wa.pincode = :pincode
+            ), 0) AS availableWorkersCount,
+            sd.description AS description,
+            sd.default_rate AS defaultRate,
+            (
+                SELECT AVG(r.rating)
+                FROM ratings r
+                JOIN workers w2 ON w2.id = r.worker_id
+                JOIN worker_addresses wa2 ON wa2.worker_id = w2.id
+                WHERE w2.service_category_id = sc.id
+                  AND wa2.pincode = :pincode
+            ) AS averageRating
+        FROM service_category sc
+        LEFT JOIN service_details sd ON sd.service_category_id = sc.id
+        WHERE EXISTS (
+            SELECT 1
+            FROM workers w3
+            JOIN worker_addresses wa3 ON wa3.worker_id = w3.id
+            WHERE w3.service_category_id = sc.id
+              AND wa3.pincode = :pincode
+        )
+        """, nativeQuery = true)
+    List<Object[]> findServiceCategorySummariesByPincode(@Param("pincode") String pincode);
 }

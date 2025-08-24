@@ -1,8 +1,9 @@
 package com.kushalkart.controller;
 
+import com.kushalkart.dto.NearbyServiceRequest;
 import com.kushalkart.dto.ServiceCategoryDetailsDTO;
 import com.kushalkart.dto.ServiceCategoryWithWorkersDTO;
-import com.kushalkart.dto.NearbyServiceRequest;
+import com.kushalkart.dto.ServiceCategorySummaryDTO;
 import com.kushalkart.entity.ServiceCategory;
 import com.kushalkart.model.CustomUserDetails;
 import com.kushalkart.repository.ServiceCategoryRepository;
@@ -11,8 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/services")
@@ -36,20 +38,25 @@ public class ServiceCategoryController {
         return ResponseEntity.ok(services);
     }
 
-    // NEW: Get services filtered by authenticated user's location
+    // ========================================================================
+    // EXISTING: Get services filtered by authenticated user's location
+    // Returns the old DTO (without description/defaultRate/averageRating)
+    // ========================================================================
     @GetMapping("/by-location")
     public ResponseEntity<List<ServiceCategoryWithWorkersDTO>> getServicesByUserLocation(
             Authentication authentication
     ) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long userId = userDetails.getUserId();
-        
+
         List<ServiceCategoryWithWorkersDTO> services = serviceCategoryService
                 .getServicesByUserLocation(userId);
         return ResponseEntity.ok(services);
     }
 
-    // NEW: Get services for specific user (admin use)
+    // ========================================================================
+    // EXISTING: Admin variant by userId (old DTO)
+    // ========================================================================
     @GetMapping("/user/{userId}/by-location")
     public ResponseEntity<List<ServiceCategoryWithWorkersDTO>> getServicesByUserLocation(
             @PathVariable Long userId
@@ -59,7 +66,9 @@ public class ServiceCategoryController {
         return ResponseEntity.ok(services);
     }
 
-    // NEW: Get services for nearby areas
+    // ========================================================================
+    // EXISTING: Nearby areas (old DTO)
+    // ========================================================================
     @PostMapping("/nearby")
     public ResponseEntity<List<ServiceCategoryWithWorkersDTO>> getServicesByNearbyLocation(
             @RequestBody NearbyServiceRequest request,
@@ -67,13 +76,52 @@ public class ServiceCategoryController {
     ) {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         Long userId = userDetails.getUserId();
-        
+
         List<ServiceCategoryWithWorkersDTO> services = serviceCategoryService
                 .getServicesByNearbyLocation(userId, request.getPincodes());
         return ResponseEntity.ok(services);
     }
 
-    // GET /api/services/{id} - returns service by ID
+    // ========================================================================
+    // NEW: Enriched by user location (description, defaultRate, averageRating)
+    // Uses repository summary query behind the scenes.
+    // ========================================================================
+    @GetMapping("/by-location/enriched")
+    public ResponseEntity<List<ServiceCategorySummaryDTO>> getServicesByUserLocationEnriched(
+            Authentication authentication
+    ) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Long userId = userDetails.getUserId();
+
+        String pincode = resolveUserPincode(userId); // Implement this in your service layer
+        List<ServiceCategorySummaryDTO> result = fetchSummariesByPincode(pincode);
+        return ResponseEntity.ok(result);
+    }
+
+    // ========================================================================
+    // NEW: Enriched by userId (admin)
+    // ========================================================================
+    @GetMapping("/user/{userId}/by-location/enriched")
+    public ResponseEntity<List<ServiceCategorySummaryDTO>> getServicesByUserLocationEnrichedAdmin(
+            @PathVariable Long userId
+    ) {
+        String pincode = resolveUserPincode(userId); // Implement this in your service layer
+        List<ServiceCategorySummaryDTO> result = fetchSummariesByPincode(pincode);
+        return ResponseEntity.ok(result);
+    }
+
+    // ========================================================================
+    // NEW: Enriched by explicit pincode (useful for debugging/testing)
+    // ========================================================================
+    @GetMapping("/by-pincode/enriched")
+    public ResponseEntity<List<ServiceCategorySummaryDTO>> getServicesByPincodeEnriched(
+            @RequestParam("pincode") String pincode
+    ) {
+        List<ServiceCategorySummaryDTO> result = fetchSummariesByPincode(pincode);
+        return ResponseEntity.ok(result);
+    }
+
+    // GET /api/services/{id} - returns service by ID (kept as-is)
     @GetMapping("/{id}")
     public ResponseEntity<?> getServiceById(@PathVariable Long id) {
         Optional<ServiceCategory> serviceOpt = repository.findById(id);
@@ -92,5 +140,38 @@ public class ServiceCategoryController {
         } else {
             return ResponseEntity.status(404).body("Service with id " + id + " not found.");
         }
+    }
+
+    // ========================================================================
+    // Internal helpers
+    // ========================================================================
+
+    // Replace with a proper lookup in your user/address service or repository.
+    // For example: userService.findPrimaryAddressPincodeByUserId(userId).
+    private String resolveUserPincode(Long userId) {
+        // TODO: Implement actual resolution based on your data model.
+        // If you already have serviceCategoryService.resolvePincode(userId), call it here.
+        throw new UnsupportedOperationException("Implement resolveUserPincode(userId) using your user/address model");
+    }
+
+    private List<ServiceCategorySummaryDTO> fetchSummariesByPincode(String pincode) {
+        List<Object[]> rows = repository.findServiceCategorySummariesByPincode(pincode);
+        return rows.stream().map(this::mapSummaryRow).collect(Collectors.toList());
+    }
+
+    private ServiceCategorySummaryDTO mapSummaryRow(Object[] row) {
+        Long categoryId = row[0] != null ? ((Number) row[0]).longValue() : null;
+        String categoryName = (String) row[1];
+        String userPincode = (String) row[2];
+        long availableWorkersCount = row[3] != null ? ((Number) row[3]).longValue() : 0L;
+        String description = (String) row[4];
+        BigDecimal defaultRate = row[5] == null ? null :
+                (row[5] instanceof BigDecimal ? (BigDecimal) row[5] : new BigDecimal(row[5].toString()));
+        Double averageRating = row[6] != null ? ((Number) row[6]).doubleValue() : null;
+
+        return new ServiceCategorySummaryDTO(
+                categoryId, categoryName, userPincode, availableWorkersCount,
+                description, defaultRate, averageRating
+        );
     }
 }
