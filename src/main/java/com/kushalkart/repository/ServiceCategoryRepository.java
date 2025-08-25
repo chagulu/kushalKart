@@ -60,32 +60,43 @@ public interface ServiceCategoryRepository extends JpaRepository<ServiceCategory
             sc.id AS categoryId,
             sc.name AS categoryName,
             :pincode AS userPincode,
-            COALESCE((
-                SELECT COUNT(*)
-                FROM workers w
-                JOIN worker_addresses wa ON wa.worker_id = w.id
-                WHERE w.service_category_id = sc.id
-                  AND wa.pincode = :pincode
-            ), 0) AS availableWorkersCount,
+            COUNT(DISTINCT w.id) AS availableWorkersCount,
             sd.description AS description,
             sd.default_rate AS defaultRate,
-            (
-                SELECT AVG(r.rating)
-                FROM ratings r
-                JOIN workers w2 ON w2.id = r.worker_id
-                JOIN worker_addresses wa2 ON wa2.worker_id = w2.id
-                WHERE w2.service_category_id = sc.id
-                  AND wa2.pincode = :pincode
-            ) AS averageRating
+            AVG(r.rating) AS averageRating
         FROM service_category sc
-        LEFT JOIN service_details sd ON sd.service_category_id = sc.id
-        WHERE EXISTS (
-            SELECT 1
-            FROM workers w3
-            JOIN worker_addresses wa3 ON wa3.worker_id = w3.id
-            WHERE w3.service_category_id = sc.id
-              AND wa3.pincode = :pincode
-        )
+        JOIN service_details sd ON sd.service_category_id = sc.id
+        LEFT JOIN workers w ON w.service_category_id = sc.id
+        LEFT JOIN ratings r ON r.worker_id = w.id
+        JOIN worker_addresses wa ON wa.worker_id = w.id
+        WHERE wa.pincode = :pincode
+        GROUP BY sc.id, sc.name, sd.description, sd.default_rate
         """, nativeQuery = true)
     List<Object[]> findServiceCategorySummariesByPincode(@Param("pincode") String pincode);
+
+    // Detailed summary for a specific service and worker
+    @Query(value = """
+        SELECT
+            sc.id AS categoryId,
+            sc.name AS categoryName,
+            :pincode AS userPincode,
+            COUNT(DISTINCT w.id) AS availableWorkersCount,
+            sd.description AS description,
+            sd.default_rate AS defaultRate,
+            AVG(r.rating) AS averageRating
+        FROM service_category sc
+        JOIN service_details sd ON sd.service_category_id = sc.id
+        LEFT JOIN workers w ON w.service_category_id = sc.id
+        LEFT JOIN ratings r ON r.worker_id = w.id
+        JOIN worker_addresses wa ON wa.worker_id = w.id
+        WHERE wa.pincode = :pincode
+          AND sc.id = :serviceId
+          AND w.id = :workerId
+        GROUP BY sc.id, sc.name, sd.description, sd.default_rate
+        """, nativeQuery = true)
+    List<Object[]> findServiceCategorySummaryByPincodeAndServiceAndWorker(
+            @Param("pincode") String pincode,
+            @Param("serviceId") Long serviceId,
+            @Param("workerId") Long workerId
+    );
 }

@@ -139,6 +139,34 @@ public class ServiceCategoryController {
         }
     }
 
+    // ✅ NEW: Enriched by authenticated user's pincode + service ID + worker ID
+@GetMapping("/by-pincode/enriched/{serviceId}/worker/{workerId}")
+public ResponseEntity<?> getEnrichedServiceByServiceAndWorker(
+        @PathVariable Long serviceId,
+        @PathVariable Long workerId,
+        Authentication authentication
+) {
+    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+    Long userId = userDetails.getUserId();
+
+    String pincode = resolveUserPincode(userId);
+    List<Object[]> rows = repository.findServiceCategorySummaryByPincodeAndServiceAndWorker(
+            pincode, serviceId, workerId
+    );
+
+    if (rows.isEmpty()) {
+        Map<String, Object> resp = new HashMap<>();
+        resp.put("message", "No data found for service " + serviceId + " and worker " + workerId);
+        resp.put("status", "not_found");
+        resp.put("data", null);
+        return ResponseEntity.ok(resp);
+    }
+
+    ServiceCategorySummaryDTO dto = mapSummaryRow(rows.get(0));
+    return ResponseEntity.ok(dto);
+}
+
+
 
 
 
