@@ -66,6 +66,24 @@ public class UserController {
         ));
     }
 
+    @GetMapping("/{userId}/address")
+    public ResponseEntity<?> getUserAddress(@PathVariable Long userId) {
+        UserAddress address = userAddressRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Address not found for userId: " + userId));
+
+        UserAddressDTO response = new UserAddressDTO();
+        response.setAddressLine1(address.getAddressLine1());
+        response.setAddressLine2(address.getAddressLine2());
+        response.setCity(address.getCity());
+        response.setState(address.getState());
+        response.setPincode(address.getPincode());
+        response.setLocationLat(address.getLocationLat());
+        response.setLocationLng(address.getLocationLng());
+
+        return ResponseEntity.ok(response);
+    }
+
+
     @GetMapping("/hello")
     public String hello() {
         return "Hello World";
