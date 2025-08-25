@@ -1,12 +1,12 @@
 package com.kushalkart.service;
 
-import com.kushalkart.admin.entity.Worker;
-import com.kushalkart.admin.entity.WorkerAddress;
+import com.kushalkart.entity.Worker;
+import com.kushalkart.entity.WorkerAddress;
 import com.kushalkart.dto.WorkerListingResponse;
 import com.kushalkart.entity.UserAddress;
 import com.kushalkart.repository.UserAddressRepository;
-import com.kushalkart.admin.repository.WorkerRepository;
-import com.kushalkart.admin.repository.WorkerAddressRepository;
+import com.kushalkart.repository.WorkerRepository;
+import com.kushalkart.repository.WorkerAddressRepository;
 import com.kushalkart.repository.ServiceDetailsRepository;
 import com.kushalkart.entity.ServiceDetails;
 

@@ -1,6 +1,6 @@
-package com.kushalkart.admin.repository;
+package com.kushalkart.repository;
 
-import com.kushalkart.admin.entity.WorkerAddress;
+import com.kushalkart.entity.WorkerAddress;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

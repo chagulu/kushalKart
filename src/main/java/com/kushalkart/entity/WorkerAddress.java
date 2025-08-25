@@ -1,4 +1,4 @@
-package com.kushalkart.admin.entity;
+package com.kushalkart.entity;
 
 import jakarta.persistence.*;
 

@@ -1,6 +1,6 @@
-package com.kushalkart.admin.repository;
+package com.kushalkart.repository;
 
-import com.kushalkart.admin.entity.AdminUser;
+import com.kushalkart.entity.AdminUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

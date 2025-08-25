@@ -6,7 +6,7 @@ import com.kushalkart.entity.ServiceCategory;
 import com.kushalkart.entity.UserAddress;
 import com.kushalkart.repository.ServiceCategoryRepository;
 import com.kushalkart.repository.UserAddressRepository;
-import com.kushalkart.admin.repository.WorkerAddressRepository;
+import com.kushalkart.repository.WorkerAddressRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 

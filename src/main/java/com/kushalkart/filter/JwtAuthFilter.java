@@ -2,7 +2,7 @@ package com.kushalkart.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kushalkart.util.JwtService;
-import com.kushalkart.admin.service.AdminUserDetailsService;
+import com.kushalkart.service.AdminUserDetailsService;
 import com.kushalkart.service.MyUserDetailsService;
 import com.kushalkart.model.CustomUserDetails;
 import com.kushalkart.entity.User;

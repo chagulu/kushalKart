@@ -1,6 +1,6 @@
 package com.kushalkart.config;
 
-import com.kushalkart.admin.service.AdminUserDetailsService;
+import com.kushalkart.service.AdminUserDetailsService;
 import com.kushalkart.filter.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

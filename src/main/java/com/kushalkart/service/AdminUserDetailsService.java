@@ -1,7 +1,7 @@
-package com.kushalkart.admin.service;
+package com.kushalkart.service;
 
-import com.kushalkart.admin.entity.AdminUser;
-import com.kushalkart.admin.repository.AdminUserRepository;
+import com.kushalkart.entity.AdminUser;
+import com.kushalkart.repository.AdminUserRepository;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
