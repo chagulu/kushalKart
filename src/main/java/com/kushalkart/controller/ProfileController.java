@@ -34,6 +34,8 @@ public class ProfileController {
                     Map<String, Object> response = new HashMap<>();
                     response.put("id", user.getId());
                     response.put("mobile", user.getMobile());
+                    response.put("name", user.getName());
+                    response.put("email", user.getEmail());
                     response.put("verified", user.isVerified());
                     // if you have more fields (like name, email), you can add them here
                     return ResponseEntity.ok(response);
