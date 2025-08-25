@@ -36,20 +36,18 @@ public class MasterTransactionHistory {
     @Column(name = "transaction_reference")
     private String transactionReference;
 
+    // ✅ Keep both transactionStatusId (for BookingController) AND transactionStatus (for descriptive text)
     @Column(name = "transaction_status_id", nullable = false)
     private Long transactionStatusId;
+
+    @Column(name = "transaction_status")
+    private String transactionStatus;
 
     @Column(name = "created_at", updatable = false)
     private Timestamp createdAt;
 
-    // Optional: If you want to keep updatedAt as well.
-    // @Column(name = "updated_at")
-    // private Timestamp updatedAt;
-
     // ==== Constructors ====
-    public MasterTransactionHistory() {
-        // Required by JPA
-    }
+    public MasterTransactionHistory() {}
 
     // ==== Getters and Setters ====
 
@@ -83,22 +81,15 @@ public class MasterTransactionHistory {
     public Long getTransactionStatusId() { return transactionStatusId; }
     public void setTransactionStatusId(Long transactionStatusId) { this.transactionStatusId = transactionStatusId; }
 
+    public String getTransactionStatus() { return transactionStatus; }
+    public void setTransactionStatus(String transactionStatus) { this.transactionStatus = transactionStatus; }
+
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
-
-    // If you want updatedAt:
-    // public Timestamp getUpdatedAt() { return updatedAt; }
-    // public void setUpdatedAt(Timestamp updatedAt) { this.updatedAt = updatedAt; }
 
     // ==== JPA Lifecycle Callbacks ====
     @PrePersist
     protected void onCreate() {
         this.createdAt = new Timestamp(System.currentTimeMillis());
     }
-
-    // If you want updatedAt:
-    // @PreUpdate
-    // protected void onUpdate() {
-    //     this.updatedAt = new Timestamp(System.currentTimeMillis());
-    // }
 }

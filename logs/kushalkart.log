@@ -1,8 +1,51 @@
-2025-08-25T11:25:49.105+05:30 DEBUG 36663 --- [kushalkart] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing PUT /api/user/3/address
-2025-08-25T11:25:49.142+05:30 DEBUG 36663 --- [kushalkart] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Secured PUT /api/user/3/address
-2025-08-25T11:25:49.144+05:30  WARN 36663 --- [kushalkart] [http-nio-8080-exec-9] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.HttpRequestMethodNotSupportedException: Request method 'PUT' is not supported]
-2025-08-25T11:25:49.144+05:30 DEBUG 36663 --- [kushalkart] [http-nio-8080-exec-9] o.s.security.web.FilterChainProxy        : Securing PUT /error
-2025-08-25T11:25:49.145+05:30 DEBUG 36663 --- [kushalkart] [http-nio-8080-exec-9] o.s.s.w.a.AnonymousAuthenticationFilter  : Set SecurityContextHolder to anonymous SecurityContext
-2025-08-25T11:25:49.145+05:30 DEBUG 36663 --- [kushalkart] [http-nio-8080-exec-9] o.s.s.w.a.Http403ForbiddenEntryPoint     : Pre-authenticated entry point called. Rejecting access
-2025-08-25T11:26:06.924+05:30 DEBUG 36663 --- [kushalkart] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Securing GET /api/user/3/address
-2025-08-25T11:26:06.951+05:30 DEBUG 36663 --- [kushalkart] [http-nio-8080-exec-10] o.s.security.web.FilterChainProxy        : Secured GET /api/user/3/address
+2025-08-25T12:33:17.037+05:30  INFO 56249 --- [kushalkart] [SpringApplicationShutdownHook] o.s.b.w.e.tomcat.GracefulShutdown        : Commencing graceful shutdown. Waiting for active requests to complete
+2025-08-25T12:33:17.042+05:30  INFO 56249 --- [kushalkart] [tomcat-shutdown] o.s.b.w.e.tomcat.GracefulShutdown        : Graceful shutdown complete
+2025-08-25T12:33:17.051+05:30  INFO 56249 --- [kushalkart] [SpringApplicationShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-08-25T12:33:17.062+05:30  INFO 56249 --- [kushalkart] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2025-08-25T12:33:17.070+05:30  INFO 56249 --- [kushalkart] [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2025-08-25T12:33:23.483+05:30  INFO 56683 --- [kushalkart] [main] com.kushalkart.KushalkartApplication     : Starting KushalkartApplication using Java 23.0.2 with PID 56683 (/Users/basantaswain/kushalkart/target/classes started by basantaswain in /Users/basantaswain/kushalkart)
+2025-08-25T12:33:23.484+05:30 DEBUG 56683 --- [kushalkart] [main] com.kushalkart.KushalkartApplication     : Running with Spring Boot v3.5.3, Spring v6.2.8
+2025-08-25T12:33:23.484+05:30  INFO 56683 --- [kushalkart] [main] com.kushalkart.KushalkartApplication     : No active profile set, falling back to 1 default profile: "default"
+2025-08-25T12:33:23.737+05:30  INFO 56683 --- [kushalkart] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-08-25T12:33:23.779+05:30  INFO 56683 --- [kushalkart] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 34 ms. Found 10 JPA repository interfaces.
+2025-08-25T12:33:23.995+05:30  INFO 56683 --- [kushalkart] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-08-25T12:33:24.006+05:30  INFO 56683 --- [kushalkart] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-08-25T12:33:24.006+05:30  INFO 56683 --- [kushalkart] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.42]
+2025-08-25T12:33:24.026+05:30  INFO 56683 --- [kushalkart] [main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-08-25T12:33:24.026+05:30  INFO 56683 --- [kushalkart] [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 520 ms
+2025-08-25T12:33:24.078+05:30  INFO 56683 --- [kushalkart] [main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-08-25T12:33:24.095+05:30  INFO 56683 --- [kushalkart] [main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.18.Final
+2025-08-25T12:33:24.107+05:30  INFO 56683 --- [kushalkart] [main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-08-25T12:33:24.211+05:30  INFO 56683 --- [kushalkart] [main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-08-25T12:33:24.222+05:30  INFO 56683 --- [kushalkart] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-08-25T12:33:24.279+05:30  INFO 56683 --- [kushalkart] [main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.mariadb.jdbc.Connection@1fb6b8fb
+2025-08-25T12:33:24.280+05:30  INFO 56683 --- [kushalkart] [main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-08-25T12:33:24.297+05:30  WARN 56683 --- [kushalkart] [main] org.hibernate.dialect.Dialect            : HHH000511: The 9.3.0 version for [org.hibernate.dialect.MariaDBDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 10.4.0. Check the community dialects project for available legacy versions.
+2025-08-25T12:33:24.306+05:30  INFO 56683 --- [kushalkart] [main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 9.3
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-08-25T12:33:24.734+05:30  INFO 56683 --- [kushalkart] [main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-08-25T12:33:24.803+05:30  INFO 56683 --- [kushalkart] [main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-08-25T12:33:24.893+05:30  INFO 56683 --- [kushalkart] [main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-08-25T12:33:25.194+05:30 DEBUG 56683 --- [kushalkart] [main] com.kushalkart.filter.JwtAuthFilter      : Filter 'jwtAuthFilter' configured for use
+2025-08-25T12:33:25.320+05:30  INFO 56683 --- [kushalkart] [main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name daoAuthenticationProvider
+2025-08-25T12:33:25.320+05:30  WARN 56683 --- [kushalkart] [main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2025-08-25T12:33:25.327+05:30  WARN 56683 --- [kushalkart] [main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-08-25T12:33:25.357+05:30  WARN 56683 --- [kushalkart] [main] thorizationManagerRequestMatcherRegistry : One of the patterns in [/api/admin/login, /api/superadmin/hash, /api/user/send-otp, /api/user/verify-otp, /api/bookings, transactions/mine, /api/user/*/address] is missing a leading slash. This is discouraged; please include the leading slash in all your request matcher patterns. In future versions of Spring Security, leaving out the leading slash will result in an exception.
+2025-08-25T12:33:25.437+05:30 DEBUG 56683 --- [kushalkart] [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, LogoutFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2025-08-25T12:33:25.523+05:30  INFO 56683 --- [kushalkart] [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path '/'
+2025-08-25T12:33:25.528+05:30  INFO 56683 --- [kushalkart] [main] com.kushalkart.KushalkartApplication     : Started KushalkartApplication in 2.223 seconds (process running for 2.369)
+2025-08-25T12:33:38.539+05:30  INFO 56683 --- [kushalkart] [http-nio-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-08-25T12:33:38.540+05:30  INFO 56683 --- [kushalkart] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-08-25T12:33:38.545+05:30  INFO 56683 --- [kushalkart] [http-nio-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 5 ms
+2025-08-25T12:33:38.556+05:30 DEBUG 56683 --- [kushalkart] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /api/transactions/mine
+2025-08-25T12:33:38.713+05:30 DEBUG 56683 --- [kushalkart] [http-nio-8080-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /api/transactions/mine
+2025-08-25T12:33:55.332+05:30 DEBUG 56683 --- [kushalkart] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Securing POST /api/bookings
+2025-08-25T12:33:55.368+05:30 DEBUG 56683 --- [kushalkart] [http-nio-8080-exec-3] o.s.security.web.FilterChainProxy        : Secured POST /api/bookings
+2025-08-25T12:33:55.413+05:30  INFO 56683 --- [kushalkart] [http-nio-8080-exec-3] c.k.controller.BookingController         : DEBUG /api/bookings called with request: com.kushalkart.dto.BookingRequest@8651c23
+2025-08-25T12:33:55.493+05:30  INFO 56683 --- [kushalkart] [http-nio-8080-exec-3] c.k.controller.BookingController         : DEBUG Booking created: com.kushalkart.entity.Booking@41344f04

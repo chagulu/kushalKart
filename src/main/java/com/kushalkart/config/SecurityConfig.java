@@ -54,6 +54,7 @@ public class SecurityConfig {
                     "/api/user/send-otp",
                     "/api/user/verify-otp",
                     "/api/bookings",
+                    "transactions/mine",
                     "/api/user/*/address" 
                 ).permitAll()
                 // All other endpoints, including /api/worker/register, require authentication
